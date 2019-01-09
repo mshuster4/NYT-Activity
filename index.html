@@ -28,28 +28,27 @@
                     <input type="number" class="form-control" id="numberOfRecords" placeholder="5">
                 </div>
                     <div class="form-group">
-                    <label for="startYear">Start Year (Optional):</label>
-                    <input type="number" class="form-control" id="startYear">
+                    <label for="begin-date">Start Year (Optional):</label>
+                    <input type="number" class="form-control" id="begin-date">
                 </div>
                 <div class="form-group">
-                    <label for="endYear">End Year (Optional):</label>
-                    <input type="number" class="form-control" id="endYear" placeholder="1929">
+                    <label for="end-date">End Year (Optional):</label>
+                    <input type="number" class="form-control" id="end-date" placeholder="1929">
                 
             </div>
                 <button type="submit" class="btn btn-primary" id="search-button">Search</button>
                 <button type="button" class="btn btn-warning" id="clearResults">Clear Results</button>                
             </form>
-        </div>
         
         <hr>
 
-        ss="row">
+        <div class="row">
             <h2 class="col-sm-12 text-left">Top Articles</h2>            
         </div>
 
-        <div class="topArticles"></div>
+            <div class="topArticles"></div>
         
-        </div>
+    </div>
               
 
 </body>
@@ -60,20 +59,25 @@
     $("#search-button").on("click", function(){
         var apiKey = "555456931be849db9d335ab78cdf8101";
         var searchTerm = $("#search-term").val();
+        var numberOfResults = $("#numberOfRecords").val();
         var beginDate = $("#begin-date").val();
         var endDate = $("#end-date").val();        
 
-    var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json?" + apiKey; 
-    url+= ? "?" + searchTerm + "?" + beginDate + "?" + endDate;
-
+        var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json?" + apiKey; 
+            queryUrl += "?" + $.param({
+                'q': searchTerm,
+                'fq': numberOfResults,
+                'begin_date': beginDate,
+                'end_date': endDate
+            })
 
         $.ajax({
             url: queryUrl,
             method: 'GET',
-        }).then(response){
-                        
-
-        }
+        }).then(function(response){
+            console.log(docs.web_url);
+            
+        });
 
     });
     
