@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <title>Document</title>
 </head>
+
 <body>
     <div class="jumbotron">
         <h1 class="text-center">New York Times Search</h1>
@@ -14,72 +18,99 @@
 
     <div class="container">
 
-        <div class="row">
-            <h2 class="col-sm-12 text-left">Search Parameters</h2>
-        </div>
+        <div class="card">
+            <h6 class="col-sm-12 text-left card-header">Search Parameters</h6>
 
-            <form>
+            <form class="card-body">
                 <div class="form-group">
                     <label for="search-term">Search Term:</label>
-                    <input class="form-control" id="search-term" placeholder="roosevelt">
+                    <input class="form-control" id="search-term">
                 </div>
                 <div class="form-group">
                     <label for="numberOfRecords">Number of Records to Retrieve:</label>
-                    <input type="number" class="form-control" id="numberOfRecords" placeholder="5">
+                    <input type="number" class="form-control" id="numberOfRecords">
                 </div>
-                    <div class="form-group">
+                <div class="form-group">
                     <label for="begin-date">Start Year (Optional):</label>
                     <input type="number" class="form-control" id="begin-date">
                 </div>
                 <div class="form-group">
                     <label for="end-date">End Year (Optional):</label>
-                    <input type="number" class="form-control" id="end-date" placeholder="1929">
-                
-            </div>
-                <button type="submit" class="btn btn-primary" id="search-button">Search</button>
-                <button type="button" class="btn btn-warning" id="clearResults">Clear Results</button>                
-            </form>
-        
-        <hr>
+                    <input type="number" class="form-control" id="end-date">
 
-        <div class="row">
-            <h2 class="col-sm-12 text-left">Top Articles</h2>            
+                </div>
+                <button type="submit" class="btn btn-primary" id="search-button">Search</button>
+                <button type="clear" class="btn btn-primary" id="clearResults">Clear Results</button>
+            </form>
         </div>
 
+
+        <br>
+
+        <div class="card"></div>
+            <h6 class="col-sm-12 text-left card-header">Top Articles</h6>
+        </div>
+
+        <div class="card-body">
             <div class="topArticles"></div>
-        
+        </div>
     </div>
-              
+
+    </div>
+
 
 </body>
 
 <script>
-    
 
-    $("#search-button").on("click", function(){
-        var apiKey = "555456931be849db9d335ab78cdf8101";
-        var searchTerm = $("#search-term").val();
-        var numberOfResults = $("#numberOfRecords").val();
-        var beginDate = $("#begin-date").val();
-        var endDate = $("#end-date").val();        
+    $(document).ready(function () {
+        $("#search-button").on("click", function (event) {
+            event.preventDefault();
+            var searchTerm = $("#search-term").val();
+            var numberOfResults = $("#numberOfRecords").val();
+            var beginDate = $("#begin-date").val();
+            var endDate = $("#end-date").val();
 
-        var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json?" + apiKey; 
-            queryUrl += "?" + $.param({
+            var queryUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=555456931be849db9d335ab78cdf8101";
+            queryUrl += "&" + $.param({
                 'q': searchTerm,
                 'fq': numberOfResults,
-                'begin_date': beginDate,
-                'end_date': endDate
-            })
+                'begin_date': beginDate + '-01-01',
+                'end_date': endDate + '-12-31'
+            });
+            console.log("anything");
+            $.ajax({
+                url: queryUrl,
+                method: "GET"
+       
+            }).then(function (response) {
+                var newNum = Number(numberOfResults);
+                for(var i = 1; i < newNum; i++){
+                    var summary;
+                    summary = response.docs[i].headline.main;
+                    $(".topArticles").append(summary);
+                };
 
-        $.ajax({
-            url: queryUrl,
-            method: 'GET',
-        }).then(function(response){
-            console.log(docs.web_url);
-            
+
+                console.log(numberOfResults);
+                
+
+            });
+
         });
 
+
+
+
+
+
+        $("#clearResults").on("click", function (event) {
+
+            $("<input>").empty();
+            $(".topArticles").empty(); 
+
+        });
     });
-    
 </script>
+
 </html>
